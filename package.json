@@ -1,6 +1,10 @@
 {
   "name": "wei-cap-stat",
-  "version": "0.1.0",
+  "version": "0.0.1",
+  "author": {
+    "name": "Denis Listiadi",
+    "email": "denislistiadi24@gmail.com"
+  },
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
