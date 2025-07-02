@@ -1,0 +1,10 @@
+pre-commit:
+  piped: true
+  commands:
+    biome:
+      run: |
+        FILES=$(echo {staged_files} | tr ' ' '\n' | grep -E '\.(js|ts|jsx|tsx|json|md|css|scss)$' || true)
+        if [ -n "$FILES" ]; then
+          echo "$FILES" | xargs npx biome check --apply
+        fi
+      stage_fixed: true
