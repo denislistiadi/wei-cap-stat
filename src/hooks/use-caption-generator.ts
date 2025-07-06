@@ -12,7 +12,7 @@ export const useCaptionGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isCopied, setIsCopied] = useState<number | null>(null);
 
-  const generateCaptions = useCallback(() => {
+  const generateCaptions = useCallback(async () => {
     if (!inputText.trim()) {
       toast('Deskripsi Kosong', {
         description: 'Silakan masukkan deskripsi untuk membuat caption',
@@ -23,23 +23,19 @@ export const useCaptionGenerator = () => {
     setIsLoading(true);
     setCaptions([]);
 
-    setTimeout(() => {
-      const baseCaptions = [
-        `Momen spesial ini layak diabadikan`,
-        `Hidup adalah kumpulan momen seperti ini. ${inputText}`,
-        `Tak ada yang lebih berharga dari momen seperti ini`,
-        `"${inputText}" - sebuah cerita yang takkan terlupakan`,
-        `Ketika waktu berhenti sejenak untuk ${inputText}`,
-      ];
-
-      const generatedCaptions = baseCaptions.map((text, idx) => ({
-        id: `caption-${Date.now()}-${idx}`,
-        text,
-      }));
-
-      setCaptions(generatedCaptions);
+    try {
+      const resp = await fetch('/api/generate', {
+        method: 'POST',
+        body: JSON.stringify({ text: inputText }),
+      });
+      const { data } = await resp.json();
+      setCaptions(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
       setIsLoading(false);
-    }, 1800);
+    }
   }, [inputText]);
 
   const handleCopy = useCallback((text: string, index: number) => {
