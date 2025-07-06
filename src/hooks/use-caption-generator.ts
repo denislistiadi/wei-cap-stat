@@ -24,15 +24,30 @@ export const useCaptionGenerator = () => {
     setCaptions([]);
 
     try {
-      const resp = await fetch('/api/generate', {
+      const response = await fetch('/api/generate', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ text: inputText }),
       });
-      const { data } = await resp.json();
+
+      if (!response.ok) {
+        throw new Error('Gagal menghasilkan caption');
+      }
+
+      const { data } = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error('Format data tidak valid');
+      }
+
       setCaptions(data);
-      console.log(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast('Terjadi Kesalahan', {
+        description: error instanceof Error ? error.message : 'Gagal menghasilkan caption',
+      });
     } finally {
       setIsLoading(false);
     }
